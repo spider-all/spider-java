@@ -10,6 +10,9 @@ public class App {
   }
 
   public static void main(String[] args) {
+    Hello hello = new Hello();
+    hello.hello();
+
     Connection conn = null;
     try {
       String url = "jdbc:sqlite:spider.db";

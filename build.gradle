@@ -4,6 +4,8 @@ plugins {
 
     // Apply the application plugin to add support for building a CLI application.
     id 'application'
+
+    id 'com.google.cloud.tools.jib' version '3.0.0'
 }
 
 repositories {
@@ -13,9 +15,9 @@ repositories {
 }
 
 dependencies {
-    // This dependency is used by the application.
     implementation 'com.google.guava:guava:30.1.1-jre'
     implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.34.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.12.3'
 }
 
 application {
@@ -28,4 +30,19 @@ jar {
         attributes 'Main-Class': 'spider.App'
     }
     from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+jib {
+  from {
+    image = 'adoptopenjdk:15-jre'
+  }
+  to {
+    image = 'spider-java'
+    tags = ['latest']
+  }
+  container {
+    jvmFlags = ['-Xms512m']
+    mainClass = 'spider.App'
+    format = 'OCI'
+  }
 }
